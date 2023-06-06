@@ -1,7 +1,3 @@
-// Samet <3 Gelecekteki yengemiz...
-// İbrahim <3 Gelecekteki yengemiz...
-// Akif <3 Bitlis
-
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -191,13 +187,13 @@ public class Robot extends TimedRobot {
         driverJoystick.getRawAxis(2) * kRotationSpeed);
 
     if (yardimciJoystick.getRawButton(4)) {
-      curretPose = 3;
+      curretPose = 3; // drop position 3
     } else if (yardimciJoystick.getRawButton(1)) {
-      curretPose = 2; // Ortaya bırakma pozisyonu
+      curretPose = 2; // drop position 2
     } else if (yardimciJoystick.getRawButton(2)) {
-      curretPose = 1; // Alt intake pozisyonu
+      curretPose = 1; // lower intake position
     } else if (yardimciJoystick.getRawButton(3)) {
-      curretPose = 0; // Normal pozisyon
+      curretPose = 0; // normal position
     }
 
     if (yardimciJoystick.getRawButton(5)) {
@@ -209,22 +205,22 @@ public class Robot extends TimedRobot {
     if (yardimciJoystick.getRawButton(8)) {
       m_robotContainer.m_Superstructure.intakeMotor.set(0.2);
     } else if (yardimciJoystick.getRawButton(7)) {
-      if (curretPose == 3 && status == 1) { // ÜST KÜP BIRAKMA
+      if (curretPose == 3 && status == 1) { // drop cube 3
         m_robotContainer.m_Superstructure.intakeMotor.set(-0.7);
-      } else if (curretPose == 3 && status == 2) { // ÜST KONİ BIRAKMA
+      } else if (curretPose == 3 && status == 2) { // drop cone 3
         m_robotContainer.m_Superstructure.intakeMotor.set(-1);
-      } else if (curretPose == 2 && status == 1) { // ORTA KÜP BIRAKMA
+      } else if (curretPose == 2 && status == 1) { // drop cube 2
         m_robotContainer.m_Superstructure.intakeMotor.set(-0.7);
-      } else if (curretPose == 2 && status == 2) { // ORTA KONİ BIRAKMA
+      } else if (curretPose == 2 && status == 2) { // drop cone 2
         m_robotContainer.m_Superstructure.intakeMotor.set(-1);
-      } else if (status == 1) { // ALT KÜP BIRAKMA
+      } else if (status == 1) { // drop cube 1
         curretPose = 5;
         if (getTurretPos() > -40 && getTurretPos() < 40) {
           m_robotContainer.m_Superstructure.intakeMotor.stopMotor();
         } else {
           m_robotContainer.m_Superstructure.intakeMotor.set(-1);
         }
-      } else if (status == 2) { // ALT KONİ BIRAKMA
+      } else if (status == 2) { //drop cone 1
         curretPose = 4;
         if (getTurretPos() > -40 && getTurretPos() < 40) {
           m_robotContainer.m_Superstructure.intakeMotor.stopMotor();
@@ -258,7 +254,7 @@ public class Robot extends TimedRobot {
 
     if (backlashTimer.get() > 2) {
 
-      if (curretPose == 0) { // KONİ VE KÜP ALMA
+      if (curretPose == 0) { // take cone and cube
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           setArm(true, -5);
@@ -268,7 +264,7 @@ public class Robot extends TimedRobot {
           }
         }
         lockOnTarget(false, false);
-      } else if (curretPose == 1) { // ALT KONİ VE KÜP BIRAKMA
+      } else if (curretPose == 1) { // drop cone and cube 1
         if (getArmPos() > 40) {
           setArm(true, 22.5);
           setHead(true, 8500);
@@ -291,7 +287,7 @@ public class Robot extends TimedRobot {
           }
         }
         lockOnTarget(false, false);
-      } else if (curretPose == 2) { // ORTA KONİ VE KÜP BIRAKMA
+      } else if (curretPose == 2) { // drop cone and cube 2
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           lockOnTarget(true, visionLockingStatus);
@@ -301,7 +297,7 @@ public class Robot extends TimedRobot {
             setHead(true, setHeadAngle(y));
           }
         }
-      } else if (curretPose == 3) { // ÜST KONİ VE KÜP BIRAKMA
+      } else if (curretPose == 3) { // drop cone and cube 3
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           lockOnTarget(true, visionLockingStatus);
@@ -310,7 +306,7 @@ public class Robot extends TimedRobot {
             setHead(true, -1000);
           }
         }
-      } else if (curretPose == 4) { // ALT KONİ BIRAKMA
+      } else if (curretPose == 4) { // drop cone 1
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           setArm(true, -5);
@@ -320,7 +316,7 @@ public class Robot extends TimedRobot {
           }
         }
         lockOnTarget(false, false);
-      } else if (curretPose == 5) { // ALT KÜP BIRAKMA
+      } else if (curretPose == 5) { // drop cube 1
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           setArm(true, -5);
@@ -383,9 +379,9 @@ public class Robot extends TimedRobot {
       m_robotContainer.m_Superstructure.turretMotor.set(ControlMode.MotionMagic,
           MathUtil.clamp(calculatedAngle, turretMinPos, turretMaxPos));
       if (calculatedAngle > turretMaxPos) {
-        System.out.println("Turret MAX sinirin disina cikmaya calisiyor!");
+        System.out.println("Turret MAX is trying to get out of bounds!");
       } else if (calculatedAngle < turretMinPos) {
-        System.out.println("Turret MIN sinirin disina cikmaya calisiyor!");
+        System.out.println("Turret MIN is trying to get out of bounds!");
       }
     } else {
       m_robotContainer.m_Superstructure.turretMotor.stopMotor();
