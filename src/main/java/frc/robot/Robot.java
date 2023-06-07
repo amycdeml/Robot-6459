@@ -66,12 +66,9 @@ public class Robot extends TimedRobot {
 
   int curretPose = 0;
 
-  double turretKConv = -1055.55;
   double elevatorKConv = 9090.90;
   double armKConv = 354.6;
 
-  private double turretMinPos = -548000; // 240000
-  private double turretMaxPos = 548000; // -240000
   private double elevatorMinPos = -255000;
   private double elevatorMaxPos = 0;
   private double armMinPos = -500;
@@ -84,7 +81,6 @@ public class Robot extends TimedRobot {
   double maxXLimiter = 20;
 
   int status;
-
 
   @Override
   public void robotInit() {
@@ -136,17 +132,17 @@ public class Robot extends TimedRobot {
     elevatorMotorPos.setDouble(m_robotContainer.m_Superstructure.elevatorMotor.getSelectedSensorPosition());
     armMotorPos.setDouble(m_robotContainer.m_Superstructure.armMotor.getSelectedSensorPosition());
     headMotorPos.setDouble(m_robotContainer.m_Superstructure.headMotor.getSelectedSensorPosition());
-    turretMotorPos.setDouble(m_robotContainer.m_Superstructure.turretMotor.getSelectedSensorPosition());
+    turretMotorPos.setDouble(m_robotContainer.m_turret.turretMotor.getSelectedSensorPosition());
 
     elevatorMotorTemp.setDouble(m_robotContainer.m_Superstructure.elevatorMotor.getTemperature());
     armMotorTemp.setDouble(m_robotContainer.m_Superstructure.armMotor.getTemperature());
     headMotorTemp.setDouble(m_robotContainer.m_Superstructure.headMotor.getTemperature());
-    turretMotorTemp.setDouble(m_robotContainer.m_Superstructure.turretMotor.getTemperature());
+    turretMotorTemp.setDouble(m_robotContainer.m_turret.turretMotor.getTemperature());
 
     elevatorMotorCurrent.setDouble(m_robotContainer.m_Superstructure.elevatorMotor.getSupplyCurrent());
     armMotorCurrent.setDouble(m_robotContainer.m_Superstructure.armMotor.getSupplyCurrent());
     headMotorCurrent.setDouble(m_robotContainer.m_Superstructure.headMotor.getSupplyCurrent());
-    turretMotorCurrent.setDouble(m_robotContainer.m_Superstructure.turretMotor.getSupplyCurrent());
+    turretMotorCurrent.setDouble(m_robotContainer.m_turret.turretMotor.getSupplyCurrent());
 
     gyroPos.setDouble(m_robotContainer.m_Superstructure.gyro.getAngle());
   }
@@ -169,7 +165,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    
+
   }
 
   @Override
@@ -215,14 +211,14 @@ public class Robot extends TimedRobot {
         m_robotContainer.m_Superstructure.intakeMotor.set(-1);
       } else if (status == 1) { // drop cube 1
         curretPose = 5;
-        if (getTurretPos() > -40 && getTurretPos() < 40) {
+        if (m_robotContainer.m_turret.getTurretPos() > -40 && m_robotContainer.m_turret.getTurretPos() < 40) {
           m_robotContainer.m_Superstructure.intakeMotor.stopMotor();
         } else {
           m_robotContainer.m_Superstructure.intakeMotor.set(-1);
         }
-      } else if (status == 2) { //drop cone 1
+      } else if (status == 2) { // drop cone 1
         curretPose = 4;
-        if (getTurretPos() > -40 && getTurretPos() < 40) {
+        if (m_robotContainer.m_turret.getTurretPos() > -40 && m_robotContainer.m_turret.getTurretPos() < 40) {
           m_robotContainer.m_Superstructure.intakeMotor.stopMotor();
         } else {
           m_robotContainer.m_Superstructure.intakeMotor.set(-0.5);
@@ -260,7 +256,7 @@ public class Robot extends TimedRobot {
           setArm(true, -5);
           setHead(true, 12000);
           if (getArmPos() < 20) {
-            setTurret(true, 0);
+            m_robotContainer.m_turret.setTurret(true, 0);
           }
         }
         lockOnTarget(false, false);
@@ -269,16 +265,16 @@ public class Robot extends TimedRobot {
           setArm(true, 22.5);
           setHead(true, 8500);
           if (getArmPos() < 25) {
-            setTurret(true, 180);
-            if (getTurretPos() > 170 && getTurretPos() < 190) {
+            m_robotContainer.m_turret.setTurret(true, 180);
+            if (m_robotContainer.m_turret.getTurretPos() > 170 && m_robotContainer.m_turret.getTurretPos() < 190) {
               if (getArmPos() > 20) {
                 setElevator(true, -32.5);
               }
             }
           }
         } else {
-          setTurret(true, 180);
-          if (getTurretPos() > 170 && getTurretPos() < 190) {
+          m_robotContainer.m_turret.setTurret(true, 180);
+          if (m_robotContainer.m_turret.getTurretPos() > 170 && m_robotContainer.m_turret.getTurretPos() < 190) {
             setArm(true, 22.5);
             setHead(true, 8500);
             if (getArmPos() > 20) {
@@ -310,7 +306,7 @@ public class Robot extends TimedRobot {
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           setArm(true, -5);
-          setTurret(true, (getTurretAbs() - getTurningOffset()));
+          m_robotContainer.m_turret.setTurret(true, (getTurretAbs() - getTurningOffset()));
           if (getArmPos() < 20) {
             setHead(true, 10500);
           }
@@ -320,7 +316,7 @@ public class Robot extends TimedRobot {
         setElevator(true, -0.5);
         if (getElevatorPos() > -5) {
           setArm(true, -5);
-          setTurret(true, (getTurretAbs() - getTurningOffset()));
+          m_robotContainer.m_turret.setTurret(true, (getTurretAbs() - getTurningOffset()));
           if (getArmPos() < 20) {
             // setTurret(true, 0);
             setHead(true, 10500);
@@ -371,27 +367,6 @@ public class Robot extends TimedRobot {
     }
     valueToReturn = valueToReturn * kMinimizer;
     return valueToReturn;
-  }
-
-  public void setTurret(boolean enabled, double turretDegrees) {
-    double calculatedAngle = turretKConv * turretDegrees;
-    if (enabled) {
-      m_robotContainer.m_Superstructure.turretMotor.set(ControlMode.MotionMagic,
-          MathUtil.clamp(calculatedAngle, turretMinPos, turretMaxPos));
-      if (calculatedAngle > turretMaxPos) {
-        System.out.println("Turret MAX is trying to get out of bounds!");
-      } else if (calculatedAngle < turretMinPos) {
-        System.out.println("Turret MIN is trying to get out of bounds!");
-      }
-    } else {
-      m_robotContainer.m_Superstructure.turretMotor.stopMotor();
-    }
-  }
-
-  public double getTurretPos() {
-    double turretPos = (m_robotContainer.m_Superstructure.turretMotor.getSelectedSensorPosition() + 0.001)
-        / turretKConv;
-    return turretPos;
   }
 
   public void setElevator(boolean enabled, double elevatorCm) {
@@ -446,7 +421,7 @@ public class Robot extends TimedRobot {
     if (enabled) {
       visionIncrement += getXVal();
       double calculatedTurretAngle = (getTurretAbs() - getTurningOffset()) - visionIncrement;
-      setTurret(true, calculatedTurretAngle);
+      m_robotContainer.m_turret.setTurret(true, calculatedTurretAngle);
     } else {
       visionIncrement = 0;
     }
@@ -468,12 +443,12 @@ public class Robot extends TimedRobot {
         turningOffset;
   }
 
-  public static InterpolatingTreeMap<InterpolatingDouble,InterpolatingDouble> HeadAngleMap= new InterpolatingTreeMap<>();
+  public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> HeadAngleMap = new InterpolatingTreeMap<>();
 
   private static double setHeadAngle(double range) {
     return HeadAngleMap.getInterpolated(new InterpolatingDouble(range)).value;
   }
-  
+
   public static double[][] HeadAngleValues = {
       { 1.30, -4800 },
       { 3.30, -11500 },

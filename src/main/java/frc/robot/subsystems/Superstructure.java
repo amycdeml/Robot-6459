@@ -20,7 +20,6 @@ public class Superstructure extends SubsystemBase {
 
   public DifferentialDrive drive = new DifferentialDrive(solMaster, sagMaster);
 
-  public WPI_TalonFX turretMotor = new WPI_TalonFX(7);
   public WPI_TalonFX elevatorMotor = new WPI_TalonFX(8);
   public WPI_TalonFX armMotor = new WPI_TalonFX(9);
   public WPI_TalonFX headMotor = new WPI_TalonFX(10);
@@ -50,7 +49,6 @@ public class Superstructure extends SubsystemBase {
     sagMaster.configFactoryDefault();
     sagSlave0.configFactoryDefault();
     sagSlave1.configFactoryDefault();
-    turretMotor.configFactoryDefault();
     elevatorMotor.configFactoryDefault();
     headMotor.configFactoryDefault();
     armMotor.configFactoryDefault();
@@ -60,7 +58,6 @@ public class Superstructure extends SubsystemBase {
     armMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     headMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     elevatorMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-    turretMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     gyro.reset();
     gyro.calibrate();
@@ -75,28 +72,22 @@ public class Superstructure extends SubsystemBase {
     solSlave1.setInverted(true);
     elevatorMotor.setInverted(true);
 
-    turretMotor.configNeutralDeadband(0.001, 0);
     elevatorMotor.configNeutralDeadband(0.001, 0);
     armMotor.configNeutralDeadband(0.001, 0);
     headMotor.configNeutralDeadband(0.001, 0);
 
-    turretMotor.setSelectedSensorPosition(0);
     elevatorMotor.setSelectedSensorPosition(0);
     armMotor.setSelectedSensorPosition(0);
     headMotor.setSelectedSensorPosition(0);
 
-    turretMotor.configAllowableClosedloopError(0, 50, 1);
     elevatorMotor.configAllowableClosedloopError(0, 50, 1);
     armMotor.configAllowableClosedloopError(0, 50, 1);
     headMotor.configAllowableClosedloopError(0, 50, 1);
 
-    turretMotor.config_kP(0, 0.1);
     elevatorMotor.config_kP(0, 0.1);
     armMotor.config_kP(0, 0.5); // 0.3
     headMotor.config_kP(0, 0.1);
 
-    turretMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
-    turretMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
     elevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
     elevatorMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
     armMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
@@ -104,10 +95,6 @@ public class Superstructure extends SubsystemBase {
     headMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, 0);
     headMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, 0);
 
-    turretMotor.configNominalOutputForward(0, 0);
-    turretMotor.configNominalOutputReverse(0, 0);
-    turretMotor.configPeakOutputForward(1, 0);
-    turretMotor.configPeakOutputReverse(-1, 0);
     elevatorMotor.configNominalOutputForward(0, 0);
     elevatorMotor.configNominalOutputReverse(0, 0);
     elevatorMotor.configPeakOutputForward(1, 0);
@@ -121,8 +108,6 @@ public class Superstructure extends SubsystemBase {
     headMotor.configPeakOutputForward(0.45, 0);
     headMotor.configPeakOutputReverse(-0.45, 0);
 
-    turretMotor.configMotionCruiseVelocity(45000, 0); //30000
-    turretMotor.configMotionAcceleration(30000, 0);  //15000
     elevatorMotor.configMotionCruiseVelocity(400000, 0);
     elevatorMotor.configMotionAcceleration(60000, 0);
     armMotor.configMotionCruiseVelocity(15000, 0);
